@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.mo1451.boot.mybatis.mapper.UserMapper">
+    <resultMap id="BaseResultMap" type="com.mo1451.boot.mybatis.dto.User">
+        <id column="USER_ID" property="userId" jdbcType="DECIMAL" />
+        <result column="USER_NAME" property="userName" jdbcType="VARCHAR" />
+        <result column="USER_TYPE" property="userType" jdbcType="VARCHAR" />
+        <result column="PASSWORD_ENCRYPTED" property="passwordEncrypted" jdbcType="VARCHAR" />
+        <result column="EMAIL" property="email" jdbcType="VARCHAR" />
+        <result column="PHONE" property="phone" jdbcType="VARCHAR" />
+        <result column="START_ACTIVE_DATE" property="startActiveDate" javaType="DATE"/>
+        <result column="END_ACTIVE_DATE" property="endActiveDate" javaType="DATE"/>
+        <result column="STATUS" property="status" jdbcType="VARCHAR" />
+        <result column="LAST_PASSWORD_UPDATE_DATE" property="lastPasswordUpdateDate" javaType="DATE"/>
+        <result column="LAST_LOGIN_DATE" property="lastLoginDate" javaType="DATE"/>
+        <result column="FIRST_LOGIN" property="firstLogin" jdbcType="VARCHAR" />
+        <result column="DESCRIPTION" property="description" jdbcType="VARCHAR" />
+        <collection property="roles" ofType="com.mo1451.boot.mybatis.dto.Role">
+            <result column="ROLE_CODE" property="roleCode"/>
+        </collection>
+    </resultMap>
+
+    <select id="selectUsers" resultMap="BaseResultMap">
+        SELECT USER_ID,USER_NAME,PASSWORD_ENCRYPTED,EMAIL,PHONE,START_ACTIVE_DATE,END_ACTIVE_DATE FROM sys_user
+    </select>
+    <select id="findByUserName" resultMap="BaseResultMap" parameterType="java.lang.String">
+        SELECT
+            u.USER_ID,
+            u.USER_NAME,
+            u.PASSWORD_ENCRYPTED,
+            u.EMAIL,
+            u.PHONE,
+            u.START_ACTIVE_DATE,
+            u.END_ACTIVE_DATE,
+            r.ROLE_CODE
+        FROM
+            sys_user u,
+            sys_role_b r,
+            sys_user_role sur
+        WHERE
+            u.USER_ID = sur.USER_ID
+        and r.ROLE_ID = sur.ROLE_ID
+        and u.user_name=#{userName}
+    </select>
+</mapper>

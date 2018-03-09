@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mo1451.boot.mybatis.mapper.PermissionMapper">
+
+    <resultMap id="BaseResultMap" type="com.mo1451.boot.mybatis.dto.Permission">
+        <id column="RULE_ID" property="ruleId" jdbcType="DECIMAL" />
+        <result column="RULE_CODE" property="ruleCode" jdbcType="VARCHAR" />
+        <result column="RULE_NAME" property="ruleName" jdbcType="VARCHAR" />
+        <result column="PERMISSION_FIELD" property="permissionField" jdbcType="VARCHAR" />
+    </resultMap>
+
+    <select id="findAll"  resultMap="BaseResultMap">
+        SELECT * from sys_permission_rule
+    </select>
+
+    <select id="findByAdminUserId" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        SELECT
+            p.*
+        FROM
+            sys_user u
+        LEFT JOIN sys_user_role sru ON u.USER_ID = sru.USER_ID
+        LEFT JOIN Sys_Role_b r ON sru.ROLE_ID = r.ROLE_ID
+        LEFT JOIN sys_permission_role spr ON spr.role_id = r.ROLE_ID
+        LEFT JOIN Sys_permission_rule p ON p.RULE_ID = spr.permission_id
+        where u.USER_ID=#{userId}
+    </select>
+</mapper>
